@@ -1,8 +1,8 @@
 //535240192
 import { prisma } from '@/app/lib/prisma';
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  // Mengambil data dari database (Read Operation)
   const todos = await prisma.todo.findMany();
 
   return (
@@ -14,8 +14,6 @@ export default async function Home() {
             {todo.title} - {todo.completed ? "Selesai" : "Belum Selesai"}
           </li>
         ))}
-      </ul>
-      <p>Catatan: Di Vercel, fitur tambah data (Write) mungkin tidak akan tersimpan permanen karena keterbatasan SQLite Serverless.</p>
-    </main>
+      </ul></main>
   );
 }

@@ -1,8 +1,26 @@
 // lib/prisma.ts
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
+import path from 'path';
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient }
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
-export const prisma = globalForPrisma.prisma || new PrismaClient()
+const dbFileName = 'dev.db'; 
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+const getPrismaClient = () => {
+  if (process.env.NODE_ENV === 'production') {
+    const filePath = path.join(process.cwd(), 'prisma', dbFileName);
+    return new PrismaClient({
+      datasources: {
+        db: {
+          url: 'file:' + filePath,
+        },
+      },
+    });
+  }
+
+  return new PrismaClient();
+};
+
+export const prisma = globalForPrisma.prisma || getPrismaClient();
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
